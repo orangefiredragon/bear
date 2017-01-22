@@ -6,7 +6,8 @@
 {-# LANGUAGE TypeOperators     #-}
 
 module Serv.Server.Core.InfoApi
-    ( InfoApi
+    ( handleInfo
+    , InfoApi
     ) where
 
 import           Data.Aeson
@@ -26,8 +27,8 @@ data InfoResponse = InfoResponse
   } deriving (Generic, Show)
 
 defaultInfo = InfoResponse
-              { version   = "version"
-              , changeset = $(embedGitShortRevision)
+              { version   = "0.1.0"
+              , changeset = $(embedGitRevision)
               , branch    = $(embedGitBranch)
               }
 

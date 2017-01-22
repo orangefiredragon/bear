@@ -40,7 +40,7 @@ import           Servant.Extentions.Server
 type SysApi = InfoApi :<|> HealthApi :<|> MetricsApi
 
 coreServer :: ServerEnv -> Server SysApi
-coreServer serverEnv = handleInfo :<|> handleHealth serverEnv :<|> handleMetrics serverEnv
+coreServer serverEnv = handleInfo serverEnv :<|> handleHealth serverEnv :<|> handleMetrics serverEnv
 
 coreApp :: ServerEnv -> Application
 coreApp serverEnv = serveWithContextEx (Proxy :: Proxy SysApi) basicAuthServerContext (coreServer serverEnv)

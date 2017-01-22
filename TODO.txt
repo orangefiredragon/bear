@@ -31,7 +31,6 @@ Health
 
 Swagger doc improvements
 
-/info
 
 Database
   bootstrap
