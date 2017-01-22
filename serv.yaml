@@ -1,0 +1,10 @@
+common:
+  location: /DC
+
+server:
+  port : 8095
+
+admin:
+  user:
+    name: ops
+    password: pswd

@@ -1,0 +1,842 @@
+Configuration
+ - Yaml
+ - Env overwriting
+
+CORS endpoint -> {...}
+https://hackage.haskell.org/package/wai-cors
+CORS Configuration
+
+App Exception handling & graceful shutdown
+https://hackage.haskell.org/package/wai-middleware-catch-0.3.6/docs/Network-Wai-Middleware-Catch.html
+https://hackage.haskell.org/package/wai-graceful-0.1.0.1/docs/Network-Wai-Graceful.html
+http://hackage.haskell.org/package/warp-3.2.9/docs/Network-Wai-Handler-Warp.html#g:5
+
+Throttling
+https://hackage.haskell.org/package/wai-throttler-0.1.0.5/docs/Network-Wai-Middleware-Throttler.html
+
+Session management
+https://hackage.haskell.org/package/wai-session
+
+Postgres connection
+https://hackage.haskell.org/package/wai-session-postgresql-0.2.1.0/docs/Network-Wai-Session-PostgreSQL.html
+
+Logging
+
+Authentication
+   - Basic - Add provider
+   - oAuth
+
+Health
+   - Combine health of all subsystems (DB connection)/features
+
+Swagger doc improvements
+
+/info
+
+Database
+  bootstrap
+  connectivity
+    http://hackage.haskell.org/package/resource-pool
+    http://hackage.haskell.org/package/connection-pool
+  Data model
+
+Metrics
+  - Metrics that includes all routes separately
+  - Metrics of features
+
+Client API
+
+Testing
+  Unit tests
+
+
+Code Documentation
+
+Cabal
+
+Stack - https://docs.haskellstack.org/en/stable/GUIDE/
+
+
+containers
+
+
+GET /metrics
+{
+  "mem": 17179869184,
+  "mem.free": 293675008,
+  "uptime": 4060976,
+  "systemload.average.1min": 2.36083984375,
+  "systemload.average.5min": 2.0478515625,
+  "systemload.average.15min": 2.09033203125,
+  "socket.io": {
+    "active-users": 1,
+    "active-connections": 1,
+    "total-connections-opened": 1,
+    "messages-published": {
+      "DnStateChanged": {
+        "type": "meter",
+        "count": 5,
+        "m1": 0.2413628296882114,
+        "m5": 0.3594056883987108,
+        "m15": 0.385868837264173,
+        "mean": 0.10723860589812331,
+        "unit": "seconds"
+      },
+      "CallStateChanged": {
+        "type": "meter",
+        "count": 4,
+        "m1": 0.7360355317034586,
+        "m5": 0.786777163057294,
+        "m15": 0.7955678784039175,
+        "mean": 0.33239155725444575,
+        "unit": "seconds"
+      }
+    }
+  },
+  "incoming-requests": {
+    "global": {
+      "type": "timer",
+      "duration": {
+        "type": "histogram",
+        "min": 4,
+        "max": 2270,
+        "sum": 3216,
+        "variance": 770460.4,
+        "mean": 536,
+        "std_dev": 877.7587367836335,
+        "count": 6,
+        "median": 173.5,
+        "p75": 992,
+        "p95": 2270,
+        "p99": 2270,
+        "p999": 2270
+      },
+      "rate": {
+        "type": "meter",
+        "count": 6,
+        "m1": 0.0639260160434156,
+        "m5": 0.018175574726130666,
+        "m15": 0.0064552064414252815,
+        "mean": 0.06655574043261231,
+        "unit": "seconds"
+      }
+    },
+    "paths": {
+      "/api/wwe/v3/current-user": {
+        "type": "timer",
+        "duration": {
+          "type": "histogram",
+          "min": 2270,
+          "max": 2270,
+          "sum": 2270,
+          "variance": null,
+          "mean": 2270,
+          "std_dev": null,
+          "count": 1,
+          "median": 2270,
+          "p75": 2270,
+          "p95": 2270,
+          "p99": 2270,
+          "p999": 2270
+        },
+        "rate": {
+          "type": "meter",
+          "count": 1,
+          "m1": 0.10268342380651833,
+          "m5": 0.17503466380858934,
+          "m15": 0.191305747820606,
+          "mean": 0.0214532426576277,
+          "unit": "seconds"
+        },
+        "responses": {
+          "200": {
+            "type": "meter",
+            "count": 1,
+            "m1": 0.10268342380651833,
+            "m5": 0.17503466380858934,
+            "m15": 0.191305747820606,
+            "mean": 0.0214532426576277,
+            "unit": "seconds"
+          }
+        }
+      },
+      "/api/wwe/v3/configuration": {
+        "type": "timer",
+        "duration": {
+          "type": "histogram",
+          "min": 318,
+          "max": 318,
+          "sum": 318,
+          "variance": null,
+          "mean": 318,
+          "std_dev": null,
+          "count": 1,
+          "median": 318,
+          "p75": 318,
+          "p95": 318,
+          "p99": 318,
+          "p999": 318
+        },
+        "rate": {
+          "type": "meter",
+          "count": 1,
+          "m1": 0.10268342380651833,
+          "m5": 0.17503466380858934,
+          "m15": 0.191305747820606,
+          "mean": 0.02215182863345369,
+          "unit": "seconds"
+        },
+        "responses": {
+          "200": {
+            "type": "meter",
+            "count": 1,
+            "m1": 0.10268342380651833,
+            "m5": 0.17503466380858934,
+            "m15": 0.191305747820606,
+            "mean": 0.02215182863345369,
+            "unit": "seconds"
+          }
+        }
+      },
+      "/api/wwe/v3/start-session": {
+        "type": "timer",
+        "duration": {
+          "type": "histogram",
+          "min": 566,
+          "max": 566,
+          "sum": 566,
+          "variance": null,
+          "mean": 566,
+          "std_dev": null,
+          "count": 1,
+          "median": 566,
+          "p75": 566,
+          "p95": 566,
+          "p99": 566,
+          "p999": 566
+        },
+        "rate": {
+          "type": "meter",
+          "count": 1,
+          "m1": 0.11160702915400934,
+          "m5": 0.1779763541976046,
+          "m15": 0.19237151525464505,
+          "mean": 0.024339783375927956,
+          "unit": "seconds"
+        },
+        "responses": {
+          "200": {
+            "type": "meter",
+            "count": 1,
+            "m1": 0.11160702915400934,
+            "m5": 0.1779763541976046,
+            "m15": 0.19237151525464505,
+            "mean": 0.024339783375927956,
+            "unit": "seconds"
+          }
+        }
+      },
+      "/api/wwe/v3/voice/not-ready": {
+        "type": "timer",
+        "duration": {
+          "type": "histogram",
+          "min": 29,
+          "max": 29,
+          "sum": 29,
+          "variance": null,
+          "mean": 29,
+          "std_dev": null,
+          "count": 1,
+          "median": 29,
+          "p75": 29,
+          "p95": 29,
+          "p99": 29,
+          "p999": 29
+        },
+        "rate": {
+          "type": "meter",
+          "count": 1,
+          "m1": 0.18400888292586465,
+          "m5": 0.1966942907643235,
+          "m15": 0.19889196960097938,
+          "mean": 0.07256367462448299,
+          "unit": "seconds"
+        },
+        "responses": {
+          "200": {
+            "type": "meter",
+            "count": 1,
+            "m1": 0.18400888292586465,
+            "m5": 0.1966942907643235,
+            "m15": 0.19889196960097938,
+            "mean": 0.07256367462448299,
+            "unit": "seconds"
+          }
+        }
+      },
+      "/api/wwe/v3/voice/dial": {
+        "type": "timer",
+        "duration": {
+          "type": "histogram",
+          "min": 29,
+          "max": 29,
+          "sum": 29,
+          "variance": null,
+          "mean": 29,
+          "std_dev": null,
+          "count": 1,
+          "median": 29,
+          "p75": 29,
+          "p95": 29,
+          "p99": 29,
+          "p999": 29
+        },
+        "rate": {
+          "type": "meter",
+          "count": 1,
+          "m1": 0.18400888292586465,
+          "m5": 0.1966942907643235,
+          "m15": 0.19889196960097938,
+          "mean": 0.08163265306122448,
+          "unit": "seconds"
+        },
+        "responses": {
+          "200": {
+            "type": "meter",
+            "count": 1,
+            "m1": 0.18400888292586465,
+            "m5": 0.1966942907643235,
+            "m15": 0.19889196960097938,
+            "mean": 0.08163265306122448,
+            "unit": "seconds"
+          }
+        }
+      },
+      "/api/wwe/v3/voice/calls/<id>/answer": {
+        "type": "timer",
+        "duration": {
+          "type": "histogram",
+          "min": 4,
+          "max": 4,
+          "sum": 4,
+          "variance": null,
+          "mean": 4,
+          "std_dev": null,
+          "count": 1,
+          "median": 4,
+          "p75": 4,
+          "p95": 4,
+          "p99": 4,
+          "p999": 4
+        },
+        "rate": {
+          "type": "meter",
+          "count": 1,
+          "m1": 0.18400888292586465,
+          "m5": 0.1966942907643235,
+          "m15": 0.19889196960097938,
+          "mean": 0.09338812103100486,
+          "unit": "seconds"
+        },
+        "responses": {
+          "404": {
+            "type": "meter",
+            "count": 1,
+            "m1": 0.18400888292586465,
+            "m5": 0.1966942907643235,
+            "m15": 0.19889196960097938,
+            "mean": 0.09338812103100486,
+            "unit": "seconds"
+          }
+        }
+      }
+    }
+  },
+  "outgoing-requests": {
+    "global": {
+      "type": "timer",
+      "duration": {
+        "type": "histogram",
+        "min": 19,
+        "max": 1426,
+        "sum": 3593,
+        "variance": 130967.58974358976,
+        "mean": 276.3846153846154,
+        "std_dev": 361.8944455826723,
+        "count": 13,
+        "median": 226,
+        "p75": 283.5,
+        "p95": 1426,
+        "p99": 1426,
+        "p999": 1426
+      },
+      "rate": {
+        "type": "meter",
+        "count": 13,
+        "m1": 0.11147562286540032,
+        "m5": 0.037788060201671546,
+        "m15": 0.01379722009895521,
+        "mean": 0.14420410427066002,
+        "unit": "seconds"
+      }
+    },
+    "paths": {
+      "/api/configuration/v3/connections": {
+        "type": "timer",
+        "duration": {
+          "type": "histogram",
+          "min": 1426,
+          "max": 1426,
+          "sum": 1426,
+          "variance": null,
+          "mean": 1426,
+          "std_dev": null,
+          "count": 1,
+          "median": 1426,
+          "p75": 1426,
+          "p95": 1426,
+          "p99": 1426,
+          "p999": 1426
+        },
+        "rate": {
+          "type": "meter",
+          "count": 1,
+          "m1": 0.10268342380651833,
+          "m5": 0.17503466380858934,
+          "m15": 0.191305747820606,
+          "mean": 0.021093486331420858,
+          "unit": "seconds"
+        },
+        "responses": {
+          "200": {
+            "type": "meter",
+            "count": 1,
+            "m1": 0.10268342380651833,
+            "m5": 0.17503466380858934,
+            "m15": 0.191305747820606,
+            "mean": 0.021093486331420858,
+            "unit": "seconds"
+          }
+        }
+      },
+      "/api/configuration/v3/configuration/persons": {
+        "type": "timer",
+        "duration": {
+          "type": "histogram",
+          "min": 226,
+          "max": 226,
+          "sum": 226,
+          "variance": null,
+          "mean": 226,
+          "std_dev": null,
+          "count": 1,
+          "median": 226,
+          "p75": 226,
+          "p95": 226,
+          "p99": 226,
+          "p999": 226
+        },
+        "rate": {
+          "type": "meter",
+          "count": 1,
+          "m1": 0.10268342380651833,
+          "m5": 0.17503466380858934,
+          "m15": 0.191305747820606,
+          "mean": 0.021196769612311085,
+          "unit": "seconds"
+        },
+        "responses": {
+          "200": {
+            "type": "meter",
+            "count": 1,
+            "m1": 0.10268342380651833,
+            "m5": 0.17503466380858934,
+            "m15": 0.191305747820606,
+            "mean": 0.021196769612311085,
+            "unit": "seconds"
+          }
+        }
+      },
+      "/api/configuration/v3/configuration/agent-logins": {
+        "type": "timer",
+        "duration": {
+          "type": "histogram",
+          "min": 224,
+          "max": 224,
+          "sum": 224,
+          "variance": null,
+          "mean": 224,
+          "std_dev": null,
+          "count": 1,
+          "median": 224,
+          "p75": 224,
+          "p95": 224,
+          "p99": 224,
+          "p999": 224
+        },
+        "rate": {
+          "type": "meter",
+          "count": 1,
+          "m1": 0.10268342380651833,
+          "m5": 0.17503466380858934,
+          "m15": 0.191305747820606,
+          "mean": 0.021301069313679546,
+          "unit": "seconds"
+        },
+        "responses": {
+          "200": {
+            "type": "meter",
+            "count": 1,
+            "m1": 0.10268342380651833,
+            "m5": 0.17503466380858934,
+            "m15": 0.191305747820606,
+            "mean": 0.021301069313679546,
+            "unit": "seconds"
+          }
+        }
+      },
+      "/api/configuration/v3/configuration/places": {
+        "type": "timer",
+        "duration": {
+          "type": "histogram",
+          "min": 230,
+          "max": 230,
+          "sum": 230,
+          "variance": null,
+          "mean": 230,
+          "std_dev": null,
+          "count": 1,
+          "median": 230,
+          "p75": 230,
+          "p95": 230,
+          "p99": 230,
+          "p999": 230
+        },
+        "rate": {
+          "type": "meter",
+          "count": 1,
+          "m1": 0.10268342380651833,
+          "m5": 0.17503466380858934,
+          "m15": 0.191305747820606,
+          "mean": 0.021302884410549186,
+          "unit": "seconds"
+        },
+        "responses": {
+          "200": {
+            "type": "meter",
+            "count": 1,
+            "m1": 0.10268342380651833,
+            "m5": 0.17503466380858934,
+            "m15": 0.191305747820606,
+            "mean": 0.021302884410549186,
+            "unit": "seconds"
+          }
+        }
+      },
+      "/api/voice/v3/switches/<id>/register-address": {
+        "type": "timer",
+        "duration": {
+          "type": "histogram",
+          "min": 38,
+          "max": 53,
+          "sum": 91,
+          "variance": 112.5,
+          "mean": 45.5,
+          "std_dev": 10.606601717798213,
+          "count": 2,
+          "median": 45.5,
+          "p75": 53,
+          "p95": 53,
+          "p99": 53,
+          "p999": 53
+        },
+        "rate": {
+          "type": "meter",
+          "count": 2,
+          "m1": 0.11160702915400934,
+          "m5": 0.1779763541976046,
+          "m15": 0.19237151525464505,
+          "mean": 0.04269490222867389,
+          "unit": "seconds"
+        },
+        "responses": {
+          "200": {
+            "type": "meter",
+            "count": 2,
+            "m1": 0.11160702915400934,
+            "m5": 0.1779763541976046,
+            "m15": 0.19237151525464505,
+            "mean": 0.042695813675469124,
+            "unit": "seconds"
+          }
+        }
+      },
+      "/api/configuration/v3/configuration/action-codes": {
+        "type": "timer",
+        "duration": {
+          "type": "histogram",
+          "min": 281,
+          "max": 281,
+          "sum": 281,
+          "variance": null,
+          "mean": 281,
+          "std_dev": null,
+          "count": 1,
+          "median": 281,
+          "p75": 281,
+          "p95": 281,
+          "p99": 281,
+          "p999": 281
+        },
+        "rate": {
+          "type": "meter",
+          "count": 1,
+          "m1": 0.10268342380651833,
+          "m5": 0.17503466380858934,
+          "m15": 0.191305747820606,
+          "mean": 0.02213613724405091,
+          "unit": "seconds"
+        },
+        "responses": {
+          "200": {
+            "type": "meter",
+            "count": 1,
+            "m1": 0.10268342380651833,
+            "m5": 0.17503466380858934,
+            "m15": 0.191305747820606,
+            "mean": 0.02213613724405091,
+            "unit": "seconds"
+          }
+        }
+      },
+      "/api/configuration/v3/configuration/applications": {
+        "type": "timer",
+        "duration": {
+          "type": "histogram",
+          "min": 280,
+          "max": 280,
+          "sum": 280,
+          "variance": null,
+          "mean": 280,
+          "std_dev": null,
+          "count": 1,
+          "median": 280,
+          "p75": 280,
+          "p95": 280,
+          "p99": 280,
+          "p999": 280
+        },
+        "rate": {
+          "type": "meter",
+          "count": 1,
+          "m1": 0.10268342380651833,
+          "m5": 0.17503466380858934,
+          "m15": 0.191305747820606,
+          "mean": 0.022137117304584595,
+          "unit": "seconds"
+        },
+        "responses": {
+          "200": {
+            "type": "meter",
+            "count": 1,
+            "m1": 0.10268342380651833,
+            "m5": 0.17503466380858934,
+            "m15": 0.191305747820606,
+            "mean": 0.022137117304584595,
+            "unit": "seconds"
+          }
+        }
+      },
+      "/api/configuration/v3/configuration/enumerators": {
+        "type": "timer",
+        "duration": {
+          "type": "histogram",
+          "min": 286,
+          "max": 286,
+          "sum": 286,
+          "variance": null,
+          "mean": 286,
+          "std_dev": null,
+          "count": 1,
+          "median": 286,
+          "p75": 286,
+          "p95": 286,
+          "p99": 286,
+          "p999": 286
+        },
+        "rate": {
+          "type": "meter",
+          "count": 1,
+          "m1": 0.10268342380651833,
+          "m5": 0.17503466380858934,
+          "m15": 0.191305747820606,
+          "mean": 0.022139077686023603,
+          "unit": "seconds"
+        },
+        "responses": {
+          "200": {
+            "type": "meter",
+            "count": 1,
+            "m1": 0.10268342380651833,
+            "m5": 0.17503466380858934,
+            "m15": 0.191305747820606,
+            "mean": 0.022139077686023603,
+            "unit": "seconds"
+          }
+        }
+      },
+      "/api/configuration/v3/configuration/enumerator-values": {
+        "type": "timer",
+        "duration": {
+          "type": "histogram",
+          "min": 295,
+          "max": 295,
+          "sum": 295,
+          "variance": null,
+          "mean": 295,
+          "std_dev": null,
+          "count": 1,
+          "median": 295,
+          "p75": 295,
+          "p95": 295,
+          "p99": 295,
+          "p999": 295
+        },
+        "rate": {
+          "type": "meter",
+          "count": 1,
+          "m1": 0.10268342380651833,
+          "m5": 0.17503466380858934,
+          "m15": 0.191305747820606,
+          "mean": 0.022143980158993777,
+          "unit": "seconds"
+        },
+        "responses": {
+          "200": {
+            "type": "meter",
+            "count": 1,
+            "m1": 0.10268342380651833,
+            "m5": 0.17503466380858934,
+            "m15": 0.191305747820606,
+            "mean": 0.022143980158993777,
+            "unit": "seconds"
+          }
+        }
+      },
+      "/api/configuration/v3/configuration/dns": {
+        "type": "timer",
+        "duration": {
+          "type": "histogram",
+          "min": 214,
+          "max": 214,
+          "sum": 214,
+          "variance": null,
+          "mean": 214,
+          "std_dev": null,
+          "count": 1,
+          "median": 214,
+          "p75": 214,
+          "p95": 214,
+          "p99": 214,
+          "p999": 214
+        },
+        "rate": {
+          "type": "meter",
+          "count": 1,
+          "m1": 0.11160702915400934,
+          "m5": 0.1779763541976046,
+          "m15": 0.19237151525464505,
+          "mean": 0.02414350901760062,
+          "unit": "seconds"
+        },
+        "responses": {
+          "200": {
+            "type": "meter",
+            "count": 1,
+            "m1": 0.11160702915400934,
+            "m5": 0.1779763541976046,
+            "m15": 0.19237151525464505,
+            "mean": 0.02414350901760062,
+            "unit": "seconds"
+          }
+        }
+      },
+      "/api/voice/v3/switches/<id>/agent-not-ready": {
+        "type": "timer",
+        "duration": {
+          "type": "histogram",
+          "min": 21,
+          "max": 21,
+          "sum": 21,
+          "variance": null,
+          "mean": 21,
+          "std_dev": null,
+          "count": 1,
+          "median": 21,
+          "p75": 21,
+          "p95": 21,
+          "p99": 21,
+          "p999": 21
+        },
+        "rate": {
+          "type": "meter",
+          "count": 1,
+          "m1": 0.18400888292586465,
+          "m5": 0.1966942907643235,
+          "m15": 0.19889196960097938,
+          "mean": 0.07254261878853827,
+          "unit": "seconds"
+        },
+        "responses": {
+          "200": {
+            "type": "meter",
+            "count": 1,
+            "m1": 0.18400888292586465,
+            "m5": 0.1966942907643235,
+            "m15": 0.19889196960097938,
+            "mean": 0.07254261878853827,
+            "unit": "seconds"
+          }
+        }
+      },
+      "/api/voice/v3/switches/<id>/make-call": {
+        "type": "timer",
+        "duration": {
+          "type": "histogram",
+          "min": 19,
+          "max": 19,
+          "sum": 19,
+          "variance": null,
+          "mean": 19,
+          "std_dev": null,
+          "count": 1,
+          "median": 19,
+          "p75": 19,
+          "p95": 19,
+          "p99": 19,
+          "p999": 19
+        },
+        "rate": {
+          "type": "meter",
+          "count": 1,
+          "m1": 0.18400888292586465,
+          "m5": 0.1966942907643235,
+          "m15": 0.19889196960097938,
+          "mean": 0.08159268929503917,
+          "unit": "seconds"
+        },
+        "responses": {
+          "200": {
+            "type": "meter",
+            "count": 1,
+            "m1": 0.18400888292586465,
+            "m5": 0.1966942907643235,
+            "m15": 0.19889196960097938,
+            "mean": 0.08159934720522236,
+            "unit": "seconds"
+          }
+        }
+      }
+    }
+  }
+}
