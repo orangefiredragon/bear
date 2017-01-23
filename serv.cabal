@@ -34,11 +34,14 @@ library
   other-modules:       Servant.Extentions.Server
                      , Serv.Server.Core.InfoApi
                      , Serv.Server.Features.EntityHandler
+                     , Serv.Util.GenericMonoid
+                     , Serv.Util.Validate
   build-depends:       base >= 4.7 && < 5
                      , aeson
                      , aeson-pretty
                      , async
                      , bytestring
+                     , containers
                      , ekg-core
                      , ekg-json
                      , git-embed

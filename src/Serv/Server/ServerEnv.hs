@@ -6,6 +6,7 @@ module Serv.Server.ServerEnv
     , setupServerEnv
     ) where
 
+import           Control.Exception
 import           Serv.Server.Core.Metrics
 import           Serv.Server.Core.ServerConfig
 
@@ -17,6 +18,10 @@ data ServerEnv = ServerEnv
 
 setupServerEnv :: IO ServerEnv
 setupServerEnv = do
-  config <- setupServerConfig
+  -- config <- setupServerConfig
+  conf <- loadConfig
+  config <- case conf of
+    -- (Left errs) -> throw  ( (concat ("Configuration errors.\n" : errs)))
+    (Right c)   -> return c
   metrics <- setupMetrics
   return (ServerEnv config metrics)
