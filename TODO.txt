@@ -20,9 +20,6 @@ Authentication
     - Basic - refactor
     - Configuration
 
-Metrics
-      - Metrics that includes all routes separately
-      - Metrics of features
 
 # Phase 2
 

@@ -7,17 +7,18 @@ module Serv.Server.Features.Runtime
     ( runFeatures
     ) where
 
+import           Control.Concurrent.MVar
 import           Control.Lens
 import           Control.Monad.Except
 import           Control.Monad.Reader                 (ReaderT, runReaderT)
 import           Control.Monad.Reader.Class
 import           Data.Aeson.Encode.Pretty             (encodePretty)
 import qualified Data.ByteString.Lazy.Char8           as BL8
+import qualified Data.HashMap.Strict                  as H
 import           Data.Swagger
 import           Data.Text.Encoding                   (encodeUtf8)
 import           Network.Wai                          (Application)
 import qualified Network.Wai.Handler.Warp             as WP
-import           Network.Wai.Metrics
 import qualified Network.Wai.Middleware.Cors          as CS
 import qualified Network.Wai.Middleware.Gzip          as GZ
 import qualified Network.Wai.Middleware.RequestLogger as RL
@@ -29,6 +30,7 @@ import           Serv.Server.Core.ServerConfig
 import           Serv.Server.Features.EntityHandler
 import           Serv.Server.ServerEnv
 import           Servant
+import           Servant.Ekg                          (monitorEndpoints)
 import           Servant.Extentions.Server
 import           Servant.Swagger
 
@@ -61,9 +63,11 @@ featuresApp serverEnv = serveWithContextEx (Proxy :: Proxy API) basicAuthServerC
 
 runFeatures :: ServerEnv -> IO ()
 runFeatures  serverEnv@ServerEnv{..} =  do
+  ms <- newMVar H.empty
+  let featuresMetrics = monitorEndpoints featuresAPI (metricsStore serverMetrics) ms
   putStrLn ("[API] Listening on " ++ show port)
-  WP.runSettings settings $ middleware $ featuresApp serverEnv
+  WP.runSettings settings $ middleware . featuresMetrics $ featuresApp serverEnv
   where
-   middleware = logMiddleware . GZ.gzip GZ.def . CS.simpleCors . metrics (waiMetrics serverMetrics)
+   middleware = logMiddleware . GZ.gzip GZ.def . CS.simpleCors
    settings = WP.setServerName (encodeUtf8(serverName serverConfig)) . WP.setPort port $ WP.defaultSettings
    port = serverApiPort serverConfig

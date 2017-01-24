@@ -32,6 +32,7 @@ library
                      , Serv.Server.Core.Runtime
                      , Serv.Api.Types
   other-modules:       Servant.Extentions.Server
+                     , Servant.Ekg
                      , Serv.Server.Core.InfoApi
                      , Serv.Server.Features.EntityHandler
                      , Serv.Util.GenericMonoid
@@ -55,6 +56,8 @@ library
                      , servant-swagger
                      , swagger2
                      , text
+                     , time
+                     , unordered-containers
                      , yaml
                      , wai
                      , wai-cors

@@ -7,20 +7,17 @@ module Serv.Server.Core.Metrics
     , sampleMetrics
     ) where
 
-import           Network.Wai.Metrics
 import           System.Metrics
 
 data ServerMetrics = ServerMetrics
   { metricsStore :: Store
-  , waiMetrics   :: WaiMetrics
   }
 
 setupMetrics :: IO ServerMetrics
 setupMetrics = do
   store <- newStore
   registerGcMetrics store
-  waiMetrics <- registerWaiMetrics store
-  return ServerMetrics { metricsStore = store, waiMetrics = waiMetrics }
+  return ServerMetrics { metricsStore = store}
 
 sampleMetrics :: ServerMetrics -> IO Sample
 sampleMetrics ServerMetrics { metricsStore } = sampleAll metricsStore
