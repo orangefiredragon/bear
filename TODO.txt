@@ -1,4 +1,3 @@
-
 # Phase 1
 
 Investigate type of handlePostEntity
@@ -11,7 +10,6 @@ Logging
   Configure what to log
   Config where to log
 
-
 Configuration
  - error handling
  - Env overwriting
@@ -19,7 +17,6 @@ Configuration
 Authentication
     - Basic - refactor
     - Configuration
-
 
 # Phase 2
 
@@ -35,15 +32,11 @@ User sessions based on cookie
 Health
      - Combine health of all subsystems (DB connection)/features
 
-
 # Phase 3
-
 
 CORS endpoint -> {...}
 https://hackage.haskell.org/package/wai-cors
 CORS Configuration
-
-
 
 
 App Exception handling & graceful shutdown
@@ -60,21 +53,18 @@ https://hackage.haskell.org/package/wai-session
 Postgres connection
 https://hackage.haskell.org/package/wai-session-postgresql-0.2.1.0/docs/Network-Wai-Session-PostgreSQL.html
 
-
 Authentication
    - oAuth
 
 Swagger doc improvements
-
 
 Client API
 
 Testing
   Unit tests
 
-
 Code Documentation
 
-Cabal
+Cabal file
 
-Stack - https://docs.haskellstack.org/en/stable/GUIDE/
+Stack file - https://docs.haskellstack.org/en/stable/GUIDE/
