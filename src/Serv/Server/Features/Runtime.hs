@@ -1,11 +1,11 @@
 {-# LANGUAGE DataKinds         #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TypeOperators     #-}
 
 module Serv.Server.Features.Runtime
     ( runFeatures
     ) where
-
 
 import           Control.Lens
 import           Control.Monad.Except
@@ -14,6 +14,7 @@ import           Control.Monad.Reader.Class
 import           Data.Aeson.Encode.Pretty             (encodePretty)
 import qualified Data.ByteString.Lazy.Char8           as BL8
 import           Data.Swagger
+import           Data.Text.Encoding                   (encodeUtf8)
 import           Network.Wai                          (Application)
 import qualified Network.Wai.Handler.Warp             as WP
 import           Network.Wai.Metrics
@@ -59,12 +60,10 @@ featuresApp :: ServerEnv -> Application
 featuresApp serverEnv = serveWithContextEx (Proxy :: Proxy API) basicAuthServerContext (featuresServer serverEnv)
 
 runFeatures :: ServerEnv -> IO ()
-runFeatures  serverEnv =  do
+runFeatures  serverEnv@ServerEnv{..} =  do
   putStrLn ("[API] Listening on " ++ show port)
   WP.runSettings settings $ middleware $ featuresApp serverEnv
   where
-   -- RL.mkRequestLogger RL.def
-   middleware = GZ.gzip GZ.def . CS.simpleCors . metricsMiddleware . RL.logStdoutDev
-   metricsMiddleware = metrics (waiMetrics $ serverMetrics serverEnv)
-   settings = WP.setServerName "Bear" . WP.setPort port $ WP.defaultSettings
-   port = serverApiPort (serverConfig serverEnv)
+   middleware = logMiddleware . GZ.gzip GZ.def . CS.simpleCors . metrics (waiMetrics serverMetrics)
+   settings = WP.setServerName (encodeUtf8(serverName serverConfig)) . WP.setPort port $ WP.defaultSettings
+   port = serverApiPort serverConfig

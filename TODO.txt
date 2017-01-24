@@ -1,14 +1,24 @@
 
 # Phase 1
 
+Investigate type of handlePostEntity
+
 Logging
+  Logging in handlers - come up with nicer function to Log
+  log ... ... ...
+  Logging to file
+  Logging formatter
+  Configure what to log
+  Config where to log
+
 
 Configuration
- - Yaml
+ - error handling
  - Env overwriting
 
 Authentication
-    - Basic - Add provider
+    - Basic - refactor
+    - Configuration
 
 Metrics
       - Metrics that includes all routes separately
@@ -23,6 +33,7 @@ Database
     http://hackage.haskell.org/package/connection-pool
   Data model
 
+User sessions based on cookie
 
 Health
      - Combine health of all subsystems (DB connection)/features

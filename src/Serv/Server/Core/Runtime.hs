@@ -1,5 +1,6 @@
 {-# LANGUAGE DataKinds         #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TypeOperators     #-}
 
 module Serv.Server.Core.Runtime
@@ -13,13 +14,14 @@ import           Control.Monad.Reader                 (ReaderT, runReaderT)
 import           Control.Monad.Reader.Class
 import           Data.Aeson.Encode.Pretty             (encodePretty)
 import qualified Data.ByteString.Lazy.Char8           as BL8
+import           Data.Text.Encoding                   (encodeUtf8)
 import           Network.Wai                          (Application)
 import           Network.Wai.Handler.Warp             (run)
 import qualified Network.Wai.Handler.Warp             as WP
 import           Network.Wai.Metrics
 import qualified Network.Wai.Middleware.Cors          as CS
 import qualified Network.Wai.Middleware.Gzip          as GZ
-import qualified Network.Wai.Middleware.RequestLogger as RL
+import           Network.Wai.Middleware.RequestLogger
 import qualified Network.Wai.Middleware.StripHeaders  as SH
 import           Serv.Api
 import           Serv.Api.Auth
@@ -35,6 +37,8 @@ import           Serv.Server.Features.EntityHandler
 import           Serv.Server.ServerEnv
 import           Servant
 import           Servant.Extentions.Server
+import           System.Log.FastLogger
+
 
 -- | System API: info, health, metrics
 type SysApi = InfoApi :<|> HealthApi :<|> MetricsApi
@@ -46,11 +50,10 @@ coreApp :: ServerEnv -> Application
 coreApp serverEnv = serveWithContextEx (Proxy :: Proxy SysApi) basicAuthServerContext (coreServer serverEnv)
 
 runCore :: ServerEnv -> IO ()
-runCore serverEnv =  do
+runCore serverEnv@ServerEnv{..} =  do
   putStrLn ("[Sys] Listening on " ++ show port)
   WP.runSettings settings $ middleware $ coreApp serverEnv
   where
-   -- RL.mkRequestLogger RL.def
-   middleware = GZ.gzip GZ.def . CS.simpleCors . RL.logStdoutDev
-   settings = WP.setServerName "Bear" . WP.setPort port $ WP.defaultSettings
-   port = serverSysPort (serverConfig serverEnv)
+   middleware = GZ.gzip GZ.def . CS.simpleCors
+   settings = WP.setServerName (encodeUtf8(serverName serverConfig)) . WP.setPort port $ WP.defaultSettings
+   port = serverSysPort serverConfig

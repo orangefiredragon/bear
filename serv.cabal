@@ -42,8 +42,10 @@ library
                      , async
                      , bytestring
                      , containers
+                     , data-default-class
                      , ekg-core
                      , ekg-json
+                     , fast-logger
                      , git-embed
                      , http-types
                      , lens
