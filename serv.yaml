@@ -1,3 +1,7 @@
 apiPort     : 8085
 sysPort     : 8095
 serverName  : Goddess
+log :
+  appenders:
+    - Console
+    - File

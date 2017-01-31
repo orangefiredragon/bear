@@ -1,5 +1,5 @@
 name:                serv
-version:             0.1.0.0
+version:             0.1.0.1
 synopsis:            HTTP API Server
 description:         Please see README.md
 homepage:            https://github.com/orangefiredragon/serv#readme
@@ -34,6 +34,7 @@ library
   other-modules:       Servant.Extentions.Server
                      , Servant.Ekg
                      , Serv.Server.Core.InfoApi
+                     , Serv.Server.Core.Logger
                      , Serv.Server.Features.EntityHandler
                      , Serv.Util.GenericMonoid
                      , Serv.Util.Validate
@@ -41,9 +42,11 @@ library
                      , aeson
                      , aeson-pretty
                      , async
+                     , auto-update
                      , bytestring
                      , containers
                      , data-default-class
+                     , easy-file
                      , ekg-core
                      , ekg-json
                      , fast-logger

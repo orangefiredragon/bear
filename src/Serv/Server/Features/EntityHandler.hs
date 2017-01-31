@@ -27,16 +27,20 @@ import           System.Log.FastLogger      (toLogStr)
 handlePostEntity serverEnv@ServerEnv{..} req = do
   let eId@(EntityId idValue) = EntityId 12345
   let location = toLazyText $ fromText entityV1ApiRoot <> decimal idValue
-
+  logH ( toLogStr ("Created entity "::Text) <> toLogStr(show idValue))
   return $ addHeader location $ success (Entity eId "Lala")
 
 handleGetEntity :: ServerEnv -> EntityId -> Handler (Response Entity)
-handleGetEntity serverEnv@ServerEnv{..} eId = do
-  liftIO (log (toLogStr ("aaa"::Text)))
+handleGetEntity serverEnv@ServerEnv{..} eId@(EntityId idValue) = do
+  logH ( toLogStr ("Get entity "::Text) <> toLogStr(show idValue))
   return $ success (Entity eId "Lala")
 
 handlePutEntity :: ServerEnv-> EntityId -> PutEntitiesRequest -> Handler (Response Entity)
-handlePutEntity serverEnv@ServerEnv{..} eId req = return $ success (Entity eId "Lala")
+handlePutEntity serverEnv@ServerEnv{..} eId@(EntityId idValue) req = do
+  logH ( toLogStr ("Updated entity "::Text) <> toLogStr(show idValue))
+  return $ success (Entity eId "Lala")
 
 handleDeleteEntity :: ServerEnv -> EntityId -> Handler (Response LT.Text)
-handleDeleteEntity serverEnv@ServerEnv{..} eId = return successNoBody
+handleDeleteEntity serverEnv@ServerEnv{..} eId@(EntityId idValue) = do
+  logH ( toLogStr ("Deleted entity "::Text) <> toLogStr(show idValue))
+  return successNoBody

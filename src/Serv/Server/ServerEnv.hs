@@ -10,6 +10,7 @@ import           Control.Exception
 import           Data.Default.Class
 import           Network.Wai
 import           Network.Wai.Middleware.RequestLogger
+import           Serv.Server.Core.Logger
 import           Serv.Server.Core.Metrics
 import           Serv.Server.Core.ServerConfig
 import           System.Log.FastLogger
@@ -17,8 +18,10 @@ import           System.Log.FastLogger
 data ServerEnv = ServerEnv
   { serverConfig   :: ServerConfig
   ,  serverMetrics :: ServerMetrics
-  , log            ::  LogStr -> IO ()
+  , log            :: LogStr -> IO ()
+  , logH           :: HandlerLogger
   , logMiddleware  :: Middleware
+  , logEnv         :: LogEnv
   }
 
 
@@ -35,10 +38,11 @@ setupServerEnv = do
   metrics <- setupMetrics
 
   -- bootstrap logging
+  logEnv <- setupLogger (serverLog config)
+  -- WAI logging middleware
   loggerSet <- newStdoutLoggerSet defaultBufSize
-  let log = pushLogStrLn loggerSet
   logMiddleware <- mkRequestLogger def { outputFormat = Detailed True
                                           , destination  = Logger loggerSet
                                           }
 
-  return (ServerEnv config metrics log logMiddleware)
+  return (ServerEnv config metrics (logMsg logEnv) (logMsgH logEnv) logMiddleware logEnv)

@@ -1,11 +1,14 @@
+{-# LANGUAGE DeriveAnyClass        #-}
 {-# LANGUAGE DeriveGeneric         #-}
 {-# LANGUAGE DuplicateRecordFields #-}
 {-# LANGUAGE OverloadedStrings     #-}
 
 module Serv.Server.Core.ServerConfig
     ( ServerConfig(..)
-    , setupServerConfig
     , loadConfig
+    , LogConfig(..)
+    , LogAppender(..)
+    , defaultConfig
     ) where
 
 import           Control.Exception
@@ -31,16 +34,21 @@ type Secret = Text
 type ServerName = Text
 
 
+data LogAppender = None | Console | File
+   deriving (Eq, Generic, Show, ToJSON, FromJSON)
+
+data LogConfig = LogConfig
+  { appenders :: [LogAppender]
+  } deriving (Generic, Show)
+
+
 data ServerConfig = ServerConfig
   { serverApiPort :: Port
   , serverSysPort :: Port
   , serverName    :: ServerName
+  , serverLog     :: LogConfig
   } deriving (Generic, Show)
 
-defaultServerConfig = ServerConfig { serverApiPort = 8080, serverSysPort = 8090, serverName = "Bear" }
-
-setupServerConfig :: IO ServerConfig
-setupServerConfig = return defaultServerConfig
 
 loadConfig :: IO (Either [String] ServerConfig)
 loadConfig = do
@@ -51,11 +59,12 @@ loadConfig = do
   return (validateConfig c)
 
 validateConfig :: RawConfig -> Either [String] ServerConfig
-validateConfig (RawConfig apiPort sysPort serverName) =
+validateConfig (RawConfig apiPort sysPort serverName logConfig) =
    runValidate $
      ServerConfig <$> validatePort apiPort
                   <*> validatePort sysPort
                   <*> validateServerName serverName
+                  <*> validateLog (LogConfig [None]) logConfig
 
 validatePort :: Last Int -> Validate Int
 validatePort = requiredField "a port number is required"
@@ -63,19 +72,46 @@ validatePort = requiredField "a port number is required"
 validateServerName :: Last ServerName -> Validate ServerName
 validateServerName = requiredField "server name is required"
 
+validateLog :: LogConfig -> Last RawLogConfig -> Validate LogConfig
+validateLog def (Last Nothing)                  = return  def
+validateLog _   (Last (Just (RawLogConfig os))) = return (LogConfig os)
+
 
 -- Raw Config file handling
+
+data RawLogConfig = RawLogConfig [LogAppender]
+  deriving (Eq, Show, Generic)
+
+instance Semigroup RawLogConfig where
+  (<>) = gmappend
+
+instance Monoid RawLogConfig where
+  mempty  = gmempty
+  mappend = (<>)
+
+instance ToJSON RawLogConfig where
+  toJSON (RawLogConfig appenders) =
+    object [ "appenders"    .= appenders
+           ]
+
+instance FromJSON RawLogConfig where
+  parseJSON =
+    JS.withObject "RawLogConfig" $ \o ->
+      RawLogConfig <$> (o .: "appenders")
+
+
 
 data RawConfig = RawConfig
                 (Last Port)                   -- API port
                 (Last Port)                   -- Management port
                 (Last ServerName)             -- server name
+                (Last RawLogConfig)
   deriving (Eq, Show, Generic)
 
 -- Default Configuration
 
 defaultConfig :: RawConfig
-defaultConfig = RawConfig (Last (Just 8080)) (Last (Just 8080)) (Last (Just "Bear"))
+defaultConfig = RawConfig (Last (Just 8080)) (Last (Just 8080)) (Last (Just "Bear")) (Last (Just(RawLogConfig [None])))
 
 
 instance Semigroup RawConfig where
@@ -86,18 +122,20 @@ instance Monoid RawConfig where
   mappend = (<>)
 
 instance ToJSON RawConfig where
-  toJSON (RawConfig apiPort sysPort serverName) =
+  toJSON (RawConfig apiPort sysPort serverName serverLog) =
     object [ "apiPort"    .= apiPort
            , "sysPort"    .= sysPort
            , "serverName" .= serverName
+           , "log"        .= serverLog
            ]
 
 instance FromJSON RawConfig where
   parseJSON =
     JS.withObject "RawConfig" $ \o ->
       RawConfig <$> (Last <$> (o .:? "apiPort"))
-             <*> (Last <$> (o .:? "sysPort"))
-             <*> (Last <$> (o .:? "serverName"))
+                <*> (Last <$> (o .:? "sysPort"))
+                <*> (Last <$> (o .:? "serverName"))
+                <*> (Last <$> (o .:? "log"))
 
 readConfigFile :: FilePath -> IO RawConfig
 readConfigFile file = either throwIO return =<< Yaml.decodeFileEither file
@@ -117,12 +155,6 @@ requiredField _      (Last (Just p)) = return p
 
 
 {-
-loadConfig :: IO (Maybe RuntimeConig)
-loadConfig = loadConfigFromFile "serv.yaml"
-
-loadConfigFromFile :: String -> IO (Maybe RuntimeConig)
-loadConfigFromFile = Y.decodeFile
-
 
 getEnvVar :: Read a => String -> a -> IO a
 getEnvVar name def = do

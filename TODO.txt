@@ -3,12 +3,12 @@
 Investigate type of handlePostEntity
 
 Logging
-  Logging in handlers - come up with nicer function to Log
-  log ... ... ...
-  Logging to file
+  Come up with nicer function for logging, something like logMsg ... ... ...
   Logging formatter
-  Configure what to log
-  Config where to log
+  Log levels: logging, configuration
+  Allow arbitrary file name for log appender
+  For inspiration:
+    https://github.com/Soostone/katip
 
 Configuration
  - error handling
