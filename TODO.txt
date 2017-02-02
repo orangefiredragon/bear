@@ -1,22 +1,23 @@
 # Phase 1
 
+Authentication
+    - Basic - refactor
+    - Configuration
+
 Investigate type of handlePostEntity
 
 Logging
   Come up with nicer function for logging, something like logMsg ... ... ...
-  Logging formatter
   Log levels: logging, configuration
   Allow arbitrary file name for log appender
+  Share LoggerSet between WAI and the rest of application
   For inspiration:
     https://github.com/Soostone/katip
 
 Configuration
- - error handling
+ - error handling - replace fail with exception
  - Env overwriting
 
-Authentication
-    - Basic - refactor
-    - Configuration
 
 # Phase 2
 

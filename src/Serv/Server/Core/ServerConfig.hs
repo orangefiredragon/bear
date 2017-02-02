@@ -39,6 +39,7 @@ data LogAppender = None | Console | File
 
 data LogConfig = LogConfig
   { appenders :: [LogAppender]
+  , request   :: LogAppender
   } deriving (Generic, Show)
 
 
@@ -64,7 +65,7 @@ validateConfig (RawConfig apiPort sysPort serverName logConfig) =
      ServerConfig <$> validatePort apiPort
                   <*> validatePort sysPort
                   <*> validateServerName serverName
-                  <*> validateLog (LogConfig [None]) logConfig
+                  <*> validateLog (LogConfig [None] None) logConfig
 
 validatePort :: Last Int -> Validate Int
 validatePort = requiredField "a port number is required"
@@ -73,13 +74,13 @@ validateServerName :: Last ServerName -> Validate ServerName
 validateServerName = requiredField "server name is required"
 
 validateLog :: LogConfig -> Last RawLogConfig -> Validate LogConfig
-validateLog def (Last Nothing)                  = return  def
-validateLog _   (Last (Just (RawLogConfig os))) = return (LogConfig os)
-
+validateLog def (Last Nothing)                    = return  def
+validateLog _   (Last (Just (RawLogConfig as (Last Nothing)))) = return (LogConfig as None)
+validateLog _   (Last (Just (RawLogConfig as (Last (Just r))))) = return (LogConfig as r)
 
 -- Raw Config file handling
 
-data RawLogConfig = RawLogConfig [LogAppender]
+data RawLogConfig = RawLogConfig [LogAppender] (Last LogAppender)
   deriving (Eq, Show, Generic)
 
 instance Semigroup RawLogConfig where
@@ -90,14 +91,16 @@ instance Monoid RawLogConfig where
   mappend = (<>)
 
 instance ToJSON RawLogConfig where
-  toJSON (RawLogConfig appenders) =
+  toJSON (RawLogConfig appenders request) =
     object [ "appenders"    .= appenders
+           , "request"      .= request
            ]
 
 instance FromJSON RawLogConfig where
   parseJSON =
     JS.withObject "RawLogConfig" $ \o ->
       RawLogConfig <$> (o .: "appenders")
+                   <*> (Last <$> (o .:? "request"))
 
 
 
@@ -111,7 +114,7 @@ data RawConfig = RawConfig
 -- Default Configuration
 
 defaultConfig :: RawConfig
-defaultConfig = RawConfig (Last (Just 8080)) (Last (Just 8080)) (Last (Just "Bear")) (Last (Just(RawLogConfig [None])))
+defaultConfig = RawConfig (Last Nothing) (Last Nothing) (Last (Just "Bear")) (Last (Just(RawLogConfig [Console] (Last (Just Console)))))
 
 
 instance Semigroup RawConfig where

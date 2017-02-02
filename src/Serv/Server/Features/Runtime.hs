@@ -25,6 +25,7 @@ import qualified Network.Wai.Middleware.RequestLogger as RL
 import qualified Network.Wai.Middleware.StripHeaders  as SH
 import           Serv.Api
 import           Serv.Api.Auth
+import           Serv.Server.Core.Logger              (LogEnv (..))
 import           Serv.Server.Core.Metrics
 import           Serv.Server.Core.ServerConfig
 import           Serv.Server.Features.EntityHandler
@@ -68,6 +69,6 @@ runFeatures  serverEnv@ServerEnv{..} =  do
   putStrLn ("[API] Listening on " ++ show port)
   WP.runSettings settings $ middleware . featuresMetrics $ featuresApp serverEnv
   where
-   middleware = logMiddleware . GZ.gzip GZ.def . CS.simpleCors
+   middleware = maybe (GZ.gzip GZ.def . CS.simpleCors) (. GZ.gzip GZ.def . CS.simpleCors) (logMiddleware logEnv)
    settings = WP.setServerName (encodeUtf8(serverName serverConfig)) . WP.setPort port $ WP.defaultSettings
    port = serverApiPort serverConfig

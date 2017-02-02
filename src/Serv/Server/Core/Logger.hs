@@ -9,34 +9,41 @@ module Serv.Server.Core.Logger
     , HandlerLogger
     ) where
 
-import           Data.Monoid                   ((<>))
-import           System.Log.FastLogger         hiding (newTimeCache)
+import           Data.Monoid                          ((<>))
+import           System.Log.FastLogger                hiding (newTimeCache)
 
-import           Control.AutoUpdate            (defaultUpdateSettings,
-                                                mkAutoUpdate, updateAction)
-import           Control.Concurrent            (myThreadId)
-import           Control.Exception             (SomeException (..), bracket,
-                                                handle)
-import           Control.Monad                 (replicateM, when)
-import           Data.ByteString               (ByteString)
-import qualified Data.ByteString.Char8         as BS
-import           Data.Time                     (UTCTime, defaultTimeLocale,
-                                                formatTime, getCurrentTime,
-                                                utcToLocalZonedTime)
+import           Control.AutoUpdate                   (defaultUpdateSettings,
+                                                       mkAutoUpdate,
+                                                       updateAction)
+import           Control.Concurrent                   (myThreadId)
+import           Control.Exception                    (SomeException (..),
+                                                       bracket, handle)
+import           Control.Monad                        (replicateM, when)
+import           Data.ByteString                      (ByteString)
+import qualified Data.ByteString.Char8                as BS
+import           Data.Time                            (UTCTime,
+                                                       defaultTimeLocale,
+                                                       formatTime,
+                                                       getCurrentTime,
+                                                       utcToLocalZonedTime)
 
 import           Data.IORef
 
-import           Serv.Server.Core.ServerConfig (LogAppender (..),
-                                                LogConfig (..))
+import           Serv.Server.Core.ServerConfig        (LogAppender (..),
+                                                       LogConfig (..))
 
 import           Control.Monad.IO.Class
-import           Servant                       (Handler)
+import           Data.Default.Class
+import           Network.Wai                          (Middleware)
+import           Network.Wai.Middleware.RequestLogger
+import           Servant                              (Handler)
 
 type HandlerLogger = LogStr -> Handler ()
 data LogEnv = LogEnv
-                { logMsg  :: FastLogger
-                , logMsgH :: HandlerLogger
-                , cleanup :: IO()
+                { logMsg        :: FastLogger
+                , logMsgH       :: HandlerLogger
+                , cleanup       :: IO()
+                , logMiddleware :: Maybe Middleware
                 }
 
 
@@ -50,8 +57,8 @@ setupLogger LogConfig{..} = do
 
   let ts = map (\x -> case x of
                   None    -> LogNone
-                  Console -> LogStdout 0
-                  File    -> LogFileNoRotate "server.log" 4096
+                  Console -> LogStdout defaultBufSize
+                  File    -> LogFileNoRotate "server.log" defaultBufSize
                   ) appenders
 
   -- build loggers
@@ -63,10 +70,20 @@ setupLogger LogConfig{..} = do
   let logMsg msg = mapM_ (\x -> x msg) loggers
   let cleanup = sequence_ cleaners
 
-
   let logMsgH msg = liftIO(logMsg msg)
 
-  return (LogEnv logMsg logMsgH cleanup)
+  -- WAI logging middleware
+  reqLogSet <- case request of
+    None    -> return Nothing
+    Console -> Just <$> newStdoutLoggerSet defaultBufSize
+    File    -> Just <$> newFileLoggerSet defaultBufSize "req.log"
+
+  logMiddleware <- case reqLogSet of
+                      Nothing   -> return Nothing
+                      (Just ls) -> Just <$> mkRequestLogger def { outputFormat = Apache FromSocket
+                                                                , destination  = Logger ls
+                                                                }
+  return (LogEnv logMsg logMsgH cleanup logMiddleware)
 
 -- Clean up Logger
 cleanupLogger :: LogEnv -> IO ()

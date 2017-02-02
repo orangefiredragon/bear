@@ -20,7 +20,6 @@ data ServerEnv = ServerEnv
   ,  serverMetrics :: ServerMetrics
   , log            :: LogStr -> IO ()
   , logH           :: HandlerLogger
-  , logMiddleware  :: Middleware
   , logEnv         :: LogEnv
   }
 
@@ -31,7 +30,7 @@ setupServerEnv = do
   -- bootstrap configuration
   conf <- loadConfig
   config <- case conf of
-    -- (Left errs) -> throw  ( (concat ("Configuration errors.\n" : errs)))
+    (Left errs) -> fail (concat ("Configuration errors.\n" : errs))
     (Right c)   -> return c
 
   -- bootstrap metrics
@@ -40,9 +39,5 @@ setupServerEnv = do
   -- bootstrap logging
   logEnv <- setupLogger (serverLog config)
   -- WAI logging middleware
-  loggerSet <- newStdoutLoggerSet defaultBufSize
-  logMiddleware <- mkRequestLogger def { outputFormat = Detailed True
-                                          , destination  = Logger loggerSet
-                                          }
 
-  return (ServerEnv config metrics (logMsg logEnv) (logMsgH logEnv) logMiddleware logEnv)
+  return (ServerEnv config metrics (logMsg logEnv) (logMsgH logEnv) logEnv)

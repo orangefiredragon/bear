@@ -1,7 +1,6 @@
-apiPort     : 8085
-sysPort     : 8095
+apiPort     : 8080
+sysPort     : 9080
 serverName  : Goddess
 log :
   appenders:
     - Console
-    - File
