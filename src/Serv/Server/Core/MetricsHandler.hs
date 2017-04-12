@@ -8,7 +8,7 @@ module Serv.Server.Core.MetricsHandler
 
 import           Control.Monad.Except
 import           Data.Aeson
-import           Serv.Api.Auth
+import           Serv.Server.Core.ManagmentAuth
 import           Serv.Server.Core.Metrics
 import           Serv.Server.ServerEnv
 import           Servant

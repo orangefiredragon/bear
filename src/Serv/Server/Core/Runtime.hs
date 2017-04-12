@@ -24,15 +24,16 @@ import qualified Network.Wai.Middleware.Gzip          as GZ
 import           Network.Wai.Middleware.RequestLogger
 import qualified Network.Wai.Middleware.StripHeaders  as SH
 import           Serv.Api
-import           Serv.Api.Auth
 import           Serv.Api.Types
+import           Serv.Server.Core.Config
+import qualified Serv.Server.Core.Config              as Cfg
 import           Serv.Server.Core.HealthApi
 import           Serv.Server.Core.HealthHandler
 import           Serv.Server.Core.InfoApi
+import           Serv.Server.Core.ManagmentAuth
 import           Serv.Server.Core.Metrics
 import           Serv.Server.Core.MetricsApi
 import           Serv.Server.Core.MetricsHandler
-import           Serv.Server.Core.ServerConfig
 import           Serv.Server.Features.EntityHandler
 import           Serv.Server.ServerEnv
 import           Servant
@@ -47,7 +48,7 @@ coreServer :: ServerEnv -> Server SysApi
 coreServer serverEnv = handleInfo serverEnv :<|> handleHealth serverEnv :<|> handleMetrics serverEnv
 
 coreApp :: ServerEnv -> Application
-coreApp serverEnv = serveWithContextEx (Proxy :: Proxy SysApi) basicAuthServerContext (coreServer serverEnv)
+coreApp serverEnv@ServerEnv{..} = serveWithContextEx (Proxy :: Proxy SysApi) (managementAuthContext (managementConf serverConfig)) (coreServer serverEnv)
 
 runCore :: ServerEnv -> IO ()
 runCore serverEnv@ServerEnv{..} =  do
@@ -55,5 +56,5 @@ runCore serverEnv@ServerEnv{..} =  do
   WP.runSettings settings $ middleware $ coreApp serverEnv
   where
    middleware = GZ.gzip GZ.def . CS.simpleCors
-   settings = WP.setServerName (encodeUtf8(serverName serverConfig)) . WP.setPort port $ WP.defaultSettings
-   port = serverSysPort serverConfig
+   settings = WP.setServerName (encodeUtf8(serverName (serverConf serverConfig))) . WP.setPort port $ WP.defaultSettings
+   port = Cfg.port (managementConf serverConfig)

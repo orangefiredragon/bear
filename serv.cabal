@@ -1,5 +1,5 @@
 name:                serv
-version:             0.1.0.2
+version:             0.1.0.3
 synopsis:            HTTP API Server
 description:         Please see README.md
 homepage:            https://github.com/orangefiredragon/serv#readme
@@ -21,8 +21,8 @@ library
                      , Serv.Server.Core.HealthApi
                      , Serv.Api.EntityTypes
                      , Serv.Api.EntityApi
+                     , Serv.Server.Core.Config
                      , Serv.Server.Core.MetricsApi
-                     , Serv.Server.Core.ServerConfig
                      , Serv.Server.Core.HealthHandler
                      , Serv.Server.Core.MetricsHandler
                      , Serv.Server
@@ -33,8 +33,15 @@ library
                      , Serv.Api.Types
   other-modules:       Servant.Extentions.Server
                      , Servant.Ekg
+                     , Serv.Server.Core.Config.ConfigData
+                     , Serv.Server.Core.Config.LogData
+                     , Serv.Server.Core.Config.ManagementData
+                     , Serv.Server.Core.Config.ServerData
+                     , Serv.Server.Core.Config.ConfigLoader
+                     , Serv.Server.Core.Config.Types
                      , Serv.Server.Core.InfoApi
                      , Serv.Server.Core.Logger
+                     , Serv.Server.Core.ManagmentAuth
                      , Serv.Server.Features.EntityHandler
                      , Serv.Util.GenericMonoid
                      , Serv.Util.Validate

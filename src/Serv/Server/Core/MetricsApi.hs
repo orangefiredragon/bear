@@ -8,9 +8,9 @@ module Serv.Server.Core.MetricsApi
 
 import           Data.Aeson
 import           Data.Proxy
-import           Serv.Api.Auth
+import           Serv.Server.Core.ManagmentAuth
 import           Servant.API
-import           Servant.API.BasicAuth (BasicAuthData (BasicAuthData))
+import           Servant.API.BasicAuth          (BasicAuthData (BasicAuthData))
 
 
 -- |  Health API V1

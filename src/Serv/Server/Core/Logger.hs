@@ -29,7 +29,7 @@ import           Data.Time                            (UTCTime,
 
 import           Data.IORef
 
-import           Serv.Server.Core.ServerConfig        (LogAppender (..),
+import           Serv.Server.Core.Config              (LogAppender (..),
                                                        LogConfig (..))
 
 import           Control.Monad.IO.Class

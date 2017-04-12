@@ -25,9 +25,9 @@ import qualified Network.Wai.Middleware.RequestLogger as RL
 import qualified Network.Wai.Middleware.StripHeaders  as SH
 import           Serv.Api
 import           Serv.Api.Auth
+import           Serv.Server.Core.Config
 import           Serv.Server.Core.Logger              (LogEnv (..))
 import           Serv.Server.Core.Metrics
-import           Serv.Server.Core.ServerConfig
 import           Serv.Server.Features.EntityHandler
 import           Serv.Server.ServerEnv
 import           Servant
@@ -70,5 +70,5 @@ runFeatures  serverEnv@ServerEnv{..} =  do
   WP.runSettings settings $ middleware . featuresMetrics $ featuresApp serverEnv
   where
    middleware = maybe (GZ.gzip GZ.def . CS.simpleCors) (. GZ.gzip GZ.def . CS.simpleCors) (logMiddleware logEnv)
-   settings = WP.setServerName (encodeUtf8(serverName serverConfig)) . WP.setPort port $ WP.defaultSettings
-   port = serverApiPort serverConfig
+   settings = WP.setServerName (encodeUtf8(serverName (serverConf serverConfig))) . WP.setPort port $ WP.defaultSettings
+   port = serverPort (serverConf serverConfig)

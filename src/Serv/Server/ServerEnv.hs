@@ -10,17 +10,17 @@ import           Control.Exception
 import           Data.Default.Class
 import           Network.Wai
 import           Network.Wai.Middleware.RequestLogger
+import           Serv.Server.Core.Config
 import           Serv.Server.Core.Logger
 import           Serv.Server.Core.Metrics
-import           Serv.Server.Core.ServerConfig
 import           System.Log.FastLogger
 
 data ServerEnv = ServerEnv
-  { serverConfig   :: ServerConfig
-  ,  serverMetrics :: ServerMetrics
-  , log            :: LogStr -> IO ()
-  , logH           :: HandlerLogger
-  , logEnv         :: LogEnv
+  { serverConfig  :: Config
+  , serverMetrics :: ServerMetrics
+  , log           :: LogStr -> IO ()
+  , logH          :: HandlerLogger
+  , logEnv        :: LogEnv
   }
 
 
@@ -37,7 +37,7 @@ setupServerEnv = do
   metrics <- setupMetrics
 
   -- bootstrap logging
-  logEnv <- setupLogger (serverLog config)
+  logEnv <- setupLogger (logConf config)
   -- WAI logging middleware
 
   return (ServerEnv config metrics (logMsg logEnv) (logMsgH logEnv) logEnv)

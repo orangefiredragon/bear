@@ -1,6 +1,13 @@
-apiPort     : 8080
-sysPort     : 9080
-serverName  : Goddess
-log :
+server:
+  name: bear
+  port: 9010
+
+management:
+  port: 9070
+  userName: admin
+  userPassword: secret
+
+log:
   appenders:
-    - Console
+  - Console
+  request: Console

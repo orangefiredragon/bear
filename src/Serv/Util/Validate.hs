@@ -1,7 +1,7 @@
 module Serv.Util.Validate where
 
 import           Control.Applicative
-
+import           Data.Monoid         (Last (..))
 
 data Validate a = Invalid [String] | Valid a
 
@@ -26,3 +26,12 @@ instance Monad Validate where
     Invalid es >>= _ = Invalid es
 
     fail e = Invalid [e]
+
+
+optionalField :: a -> Last a -> Validate a
+optionalField def (Last Nothing)  = return def
+optionalField _   (Last (Just p)) = return p
+
+requiredField :: String -> Last a -> Validate a
+requiredField errmsg (Last Nothing)  = fail errmsg
+requiredField _      (Last (Just p)) = return p

@@ -8,6 +8,7 @@ Investigate type of handlePostEntity
 
 Logging
   Come up with nicer function for logging, something like logMsg ... ... ...
+  https://www.reddit.com/r/haskell/comments/5pdmg7/dealing_with_reader_monad_and_functions_of/
   Log levels: logging, configuration
   Allow arbitrary file name for log appender
   Share LoggerSet between WAI and the rest of application
@@ -17,6 +18,7 @@ Logging
 Configuration
  - error handling - replace fail with exception
  - Env overwriting
+ - Handle missing config file instead of "InvalidYaml (Just (YamlException "Yaml file not found: serv2.yaml"))"
 
 
 # Phase 2

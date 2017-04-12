@@ -15,5 +15,10 @@ cabal.sandbox.config
 *.aux
 *.hp
 *.eventlog
+*.iml
 .stack-work/
 cabal.project.local
+.ideaHaskellLib/
+.idea/
+.vscode/
+out/

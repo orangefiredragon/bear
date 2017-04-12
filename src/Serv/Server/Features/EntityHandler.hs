@@ -41,6 +41,6 @@ handlePutEntity serverEnv@ServerEnv{..} eId@(EntityId idValue) req = do
   return $ success (Entity eId "Lala")
 
 handleDeleteEntity :: ServerEnv -> EntityId -> Handler (Response LT.Text)
-handleDeleteEntity serverEnv@ServerEnv{..} eId@(EntityId idValue) = do
+handleDeleteEntity serverEnv@ServerEnv{..} eId@(EntityId idValue) = do 
   logH ( toLogStr ("Deleted entity "::Text) <> toLogStr(show idValue))
   return successNoBody
